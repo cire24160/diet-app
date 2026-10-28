@@ -1,0 +1,256 @@
+/* =====================================================
+   ちびキャラ 運動育成デモ  style.css
+   ・キャラクター各パーツの「位置・大きさ・回転の中心(基準点)」は
+     このファイルの「パーツ配置」セクションで決めています。
+   ・単位は「キャラクター座標」(px)。JSが画面サイズに合わせて拡大縮小します。
+   ===================================================== */
+
+:root {
+  --bg-top: #dff0ff;
+  --bg-bottom: #f4fbff;
+  --accent: #5b94d6;
+  --accent-dark: #3f77b8;
+  --text: #34506f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Hiragino Maru Gothic ProN", "Yu Gothic UI", "Meiryo", "Noto Sans JP", sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  display: flex;
+  justify-content: center;
+}
+
+.app {
+  width: min(94vw, 620px);
+  padding: 20px 0 32px;
+  text-align: center;
+}
+
+.title {
+  margin: 4px 0 14px;
+  font-size: 1.35rem;
+  letter-spacing: .08em;
+}
+
+/* ---------- ステージ ---------- */
+#stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.02;
+  border-radius: 28px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 18%, #ffffff 0%, rgba(255,255,255,0) 60%),
+    linear-gradient(180deg, #bfe0ff 0%, #e6f4ff 62%, #dff5df 62%, #c9ecd0 100%);
+  box-shadow: 0 10px 30px rgba(70, 120, 180, .25), inset 0 0 0 3px rgba(255,255,255,.7);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#ground {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 38%;
+  /* 歩く・走るときに横へ流れる地面の模様（JSが background-position を動かす） */
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.55) 0 18px, rgba(255,255,255,0) 18px 70px);
+  background-size: 70px 100%;
+  opacity: .8;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 35%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 35%);
+}
+
+#glow {
+  position: absolute;
+  left: 50%; top: 46%;
+  width: 90%; aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(.5);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,246,190,.95) 0%, rgba(255,226,140,.55) 38%, rgba(255,226,140,0) 70%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#flash {
+  position: absolute; inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- キャラクター ---------- */
+/* #character-wrap の大きさと位置は JS (fitCharacter) が決める */
+#character-wrap {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  transform: translateX(-50%);
+}
+
+#character {
+  position: absolute;
+  left: 0; top: 0;
+  width: 290px;           /* キャラクター座標系の幅 */
+  height: 340px;          /* キャラクター座標系の高さ */
+  transform-origin: 0 0;  /* JS が scale() を設定 */
+}
+
+#rig {
+  position: absolute;
+  left: 0; top: 0;
+  width: 290px; height: 340px;
+  transform-origin: 136px 324px;   /* 足元の中央 = 弾み・潰れの中心 */
+  will-change: transform, filter;
+}
+
+#shadow {
+  position: absolute;
+  left: 91px; top: 314px;
+  width: 90px; height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(60,90,130,.38) 0%, rgba(60,90,130,0) 70%);
+  transform-origin: 50% 50%;
+}
+
+#sparks {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* ---------- パーツ配置 ----------
+   left / top : パーツ画像の左上の位置
+   width/height: 表示サイズ
+   transform-origin: 回転の中心(基準点)。パーツ画像の左上からの距離
+   ------------------------------------------------ */
+.part {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  will-change: transform;
+}
+
+/* 足：付け根(股関節)が回転の中心。胴体の裏に隠れる */
+#foot_right { left:  64px; top: 246px; width: 60px; height: 78px; transform-origin: 30px 8px; }
+#foot_left  { left: 146px; top: 246px; width: 63px; height: 78px; transform-origin: 31px 8px; }
+
+/* 腕：肩が回転の中心。胴体(パーカーの袖)の裏に隠れる */
+#arm_right  { left:  29px; top: 172px; width: 58px; height: 99px; transform-origin: 29px 12px; }
+#arm_left   { left: 185px; top: 172px; width: 58px; height: 99px; transform-origin: 29px 12px; }
+
+/* 胴体(パーカー) */
+#body       { left: 19px; top: 145px; width: 233px; height: 148px; transform-origin: 116px 20px; }
+
+/* 頭グループ：首元が回転の中心。頭の上下の遅れ・傾きに使う */
+#head {
+  position: absolute;
+  left: 20px; top: 40px;
+  width: 232px; height: 172px;
+  transform-origin: 116px 160px;
+  will-change: transform;
+}
+/* 耳：頭に近い付け根が回転の中心 */
+#ear_right  { left:  -3px; top:  2px; width: 84px; height: 95px; transform-origin: 67px 11px; }
+#ear_left   { left: 159px; top:  3px; width: 77px; height: 96px; transform-origin: 15px 12px; }
+#head_base  { left: 0; top: 0; width: 232px; height: 172px; }
+/* 目・口は頭と同じ大きさのキャンバス。同じ位置(0,0)に重ねるだけで合う */
+.face       { left: 0; top: 0; width: 232px; height: 172px; visibility: hidden; }
+.face.on    { visibility: visible; }
+/* 芽：茎の根元が回転の中心 */
+#sprout     { left: 96px; top: -29px; width: 65px; height: 36px; transform-origin: 32px 35px; }
+
+/* ---------- ガイド表示（パーツ枠と基準点） ---------- */
+body.show-guide .part,
+body.show-guide #head {
+  outline: 1px dashed rgba(255, 80, 120, .75);
+}
+body.show-guide .part.face { outline: none; }
+body.show-guide .pivot-dot { display: block; }
+.pivot-dot {
+  display: none;
+  position: absolute;
+  width: 7px; height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: #ff3b6b;
+  box-shadow: 0 0 0 2px #fff;
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* ---------- キラキラ ---------- */
+.spark {
+  position: absolute;
+  left: 0; top: 0;
+  pointer-events: none;
+  clip-path: polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%);
+}
+
+/* ---------- ボタン ---------- */
+#status { margin: 12px 0 8px; font-size: .95rem; min-height: 1.4em; }
+
+.controls {
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+}
+.btn {
+  font: inherit; font-weight: 700;
+  color: #fff;
+  background: linear-gradient(180deg, #7fb2ec, var(--accent));
+  border: none;
+  border-radius: 999px;
+  padding: 11px 22px;
+  min-width: 92px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--accent-dark), 0 8px 14px rgba(60, 110, 170, .25);
+  transition: transform .08s, box-shadow .08s, filter .15s;
+}
+.btn:hover { filter: brightness(1.06); }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--accent-dark); }
+.btn.active { background: linear-gradient(180deg, #ffd776, #f2b233); box-shadow: 0 4px 0 #c98b12, 0 8px 14px rgba(200,140,20,.28); color: #5a3c00; }
+.btn-special { background: linear-gradient(180deg, #b9a0f0, #8d6fd8); box-shadow: 0 4px 0 #6a4cb4, 0 8px 14px rgba(110,80,190,.25); }
+.btn-special.active { background: linear-gradient(180deg, #ffd776, #f2b233); }
+.btn:focus-visible { outline: 3px solid #1b4f95; outline-offset: 2px; }
+
+.extras { display: flex; gap: 16px; justify-content: center; align-items: center; margin-top: 16px; flex-wrap: wrap; }
+.btn-small { padding: 7px 16px; min-width: 0; font-size: .85rem; }
+.check { font-size: .88rem; cursor: pointer; }
+.hint { margin-top: 14px; font-size: .78rem; opacity: .75; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* 動きを抑えたい設定の人でも操作は可能。演出のみ控えめにする */
+  #glow, #flash { transition: none; }
+}
+
+/* 進化後専用パーツは初期状態で非表示 */
+.stage-part { opacity: 0; transition: opacity .4s; }
+
+/* ステージ2 */
+#character[data-stage="2"] #sprout     { opacity: 0; }   /* 元の芽を隠す */
+#character[data-stage="2"] .s2         { opacity: 1; }
+#character[data-stage="2"] #rig        { scale: 1.12; }  /* 少し大きく */
+
+/* ステージ3 */
+#character[data-stage="3"] .s2         { opacity: 1; }
+#character[data-stage="3"] .s3         { opacity: 1; }
+#character[data-stage="3"] #rig        { scale: 1.25; }
+#character[data-stage="3"] #body       { filter: drop-shadow(0 0 8px #ffe98a); }
+
+/* 進化演出 */
+#flash.on { animation: evolveFlash .9s ease-out; }
+@keyframes evolveFlash {
+  0%   { opacity: 0; }
+  40%  { opacity: 1; background: #fff; }
+  100% { opacity: 0; }
+}
+#character.evolving #rig { animation: evolveShake .9s ease-in-out; }
+@keyframes evolveShake {
+  0%,100% { transform: translateY(0) scale(1); }
+  30%     { transform: translateY(-14px) scale(.9, 1.1); }
+  60%     { transform: translateY(0) scale(1.1, .9); }
+}
