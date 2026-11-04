@@ -102,7 +102,7 @@ export function StepHistory() {
             <li
               className={`chart-day${day.achieved ? ' achieved' : ''}`}
               key={day.date}
-              aria-label={`${formatDate(day.date)} ${day.weekday曜日}: ${day.steps.toLocaleString('ja-JP')}歩${day.achieved ? '、目標達成' : ''}`}
+              aria-label={`${formatDate(day.date)} ${day.weekday}曜日: ${day.steps.toLocaleString('ja-JP')}歩${day.achieved ? '、目標達成' : ''}`}
             >
               <span className="bar-value">
                 {day.steps > 0 ? (day.steps / 1000).toFixed(1) : '0'}
