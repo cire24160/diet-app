@@ -8,6 +8,6 @@ function App() {
       <StepTracker />
     </div>
   );
-}S
+}
 
 export default App
