@@ -1,4 +1,7 @@
 import type { StepData } from '../types/health';
+export const calculateCalories = (steps: number): number => {
+  return Math.round(steps * 0.04);
+};
 
 const STORAGE_KEY = 'diet_app_step_data';
 
