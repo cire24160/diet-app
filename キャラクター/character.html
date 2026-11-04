@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ちびキャラ 運動育成デモ</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="app">
+    <h1 class="title">ちびキャラ 運動育成デモ</h1>
+
+    <!-- ===== ステージ（キャラクターが動く場所） ===== -->
+    <section id="stage" aria-label="キャラクターステージ">
+      <div id="glow"></div>
+      <div id="ground"></div>
+
+      <div id="character-wrap">
+        <div id="character">
+          <div id="shadow"></div>
+
+          <!-- rig: 体全体をまとめて動かす（ジャンプ・弾み・傾きなど） -->
+          <div id="rig">
+            <!-- 奥のパーツ → 手前のパーツの順に並べる（下にあるほど手前） -->
+            <img class="part" id="foot_right" src="assets/parts/foot_right.png" alt="" draggable="false">
+            <img class="part" id="foot_left"  src="assets/parts/foot_left.png"  alt="" draggable="false">
+            <img class="part" id="arm_right"  src="assets/parts/arm_right.png"  alt="" draggable="false">
+            <img class="part" id="arm_left"   src="assets/parts/arm_left.png"   alt="" draggable="false">
+            <img class="part" id="body"       src="assets/parts/body_fixed.png"       alt="" draggable="false">
+
+            <!-- head: 頭まわり（耳・顔・芽）をまとめたグループ -->
+            <div id="head">
+              <img class="part" id="ear_right"   src="assets/parts/ear_right.png"   alt="" draggable="false">
+              <img class="part" id="ear_left"    src="assets/parts/ear_left.png"    alt="" draggable="false">
+              <img class="part" id="head_base"   src="assets/parts/head_base.png"   alt="" draggable="false">
+              <img class="part face" id="eyes_open"    src="assets/parts/eyes_open.png"    alt="" draggable="false">
+              <img class="part face" id="eyes_closed"  src="assets/parts/eyes_closed.png"  alt="" draggable="false">
+              <img class="part face" id="eyes_happy"   src="assets/parts/eyes_happy.png"   alt="" draggable="false">
+              <img class="part face" id="mouth_normal" src="assets/parts/mouth_normal.png" alt="" draggable="false">
+              <img class="part face" id="mouth_happy"  src="assets/parts/mouth_happy.png"  alt="" draggable="false">
+              <img class="part" id="sprout"      src="assets/parts/sprout.png"      alt="" draggable="false">
+            </div>
+          </div>
+
+          <div id="sparks"></div>
+        </div>
+      </div>
+
+      <div id="flash"></div>
+    </section>
+
+    <p id="status" aria-live="polite">いまの動き：待機</p>
+
+    <!-- ===== 操作ボタン ===== -->
+    <nav class="controls" aria-label="アニメーション切り替え">
+      <button type="button" data-state="idle"  class="btn active">待機</button>
+      <button type="button" data-state="walk"  class="btn">歩く</button>
+      <button type="button" data-state="run"   class="btn">走る</button>
+      <button type="button" data-state="jump"  class="btn">ジャンプ</button>
+      <button type="button" data-state="wave"  class="btn">手を振る</button>
+      <button type="button" data-state="happy" class="btn">喜ぶ</button>
+      <button type="button" data-state="evolve" class="btn btn-special">進化</button>
+    </nav>
+
+    <div class="extras">
+      <button type="button" id="blink-btn" class="btn btn-small">まばたき</button>
+      <label class="check"><input type="checkbox" id="guide-toggle"> パーツ枠と基準点を表示</label>
+    </div>
+
+    <p class="hint">キーボード：1〜7 でもアニメーションを切り替えられます（1=待機 … 7=進化）</p>
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
