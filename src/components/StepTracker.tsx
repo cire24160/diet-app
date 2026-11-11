@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { StepData } from '../types/health';
-import { getTodaySteps, updateStepsManually } from '../services/healthService';
+import { getTodaySteps, updateStepsManually, calculateCalories } from '../services/healthService';
 
 export const StepTracker: React.FC = () => {
   const [stepData, setStepData] = useState<StepData | null>(null);
@@ -27,15 +27,23 @@ export const StepTracker: React.FC = () => {
     }
   };
 
+  // データ読み込み前の表示
   if (!stepData) return <div>読み込み中...</div>;
 
+  // 画面の描画（returnの中にカロリー表示を移動）
   return (
     <div style={{ border: '1px solid #ccc', padding: '16px', borderRadius: '8px', maxWidth: '400px' }}>
       <h3>今日の歩数</h3>
       <p style={{ fontSize: '24px', fontWeight: 'bold' }}>
         {stepData.steps.toLocaleString()} 歩
       </p>
-      <p style={{ fontSize: '12px', color: '#666' }}>
+
+      {/* 🔥 ここに消費カロリーの表示を追加！ */}
+      <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ff6b6b', marginTop: '8px' }}>
+        🔥 消費カロリー: {calculateCalories(stepData.steps).toLocaleString()} kcal
+      </p>
+
+      <p style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
         取得元: {stepData.source === 'device' ? 'ヘルスケア連携' : '手入力/PC'}
       </p>
 
